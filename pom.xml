@@ -27,7 +27,59 @@
 
         <!-- Dependencies -->
         <version.dependency.javaee>7.0</version.dependency.javaee>
+        
+        <!-- EJB spec version -->
+        <ejb-spec-version>3.2</ejb-spec-version>
+
+        <junit-version>4.11</junit-version>
+        <arquillian-version>1.1.4.Final</arquillian-version>
+        <arquillian-wildfly-version>8.1.0.CR2</arquillian-wildfly-version>
+        <arquillian-transaction-version>1.0.1.Final</arquillian-transaction-version>
     </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>javax</groupId>
+                <artifactId>javaee-api</artifactId>
+                <version>${javaee-api-version}</version>
+            </dependency>
+            <!-- -JUNIT-->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit-version}</version>
+            </dependency>
+            <!-- rquillian itself-->
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${arquillian-version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <!-- this is in an extention to arquillian it is optional-->
+            <dependency>
+                <groupId>org.jboss.arquillian.extension</groupId>
+                <artifactId>arquillian-transaction-bom</artifactId>
+                <version>${arquillian-transaction-version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- this is container adapter for wildfly-->
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-arquillian-container-embedded</artifactId>
+                <version>${arquillian-wildfly-version}</version>
+            </dependency>
+            <!-- this is the wildfly emb.container - BUT eventually it is not a fully blown emb.container-->
+            <dependency>
+                <groupId>org.wildfly</groupId>
+                <artifactId>wildfly-embedded</artifactId>
+                <version>${arquillian-wildfly-version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <plugins>
@@ -102,6 +154,46 @@
                 <artifactId>wildfly-maven-plugin</artifactId>
                 <version>${version.plugin.wildfly}</version>
             </plugin>
+            
+            <plugin>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>unpack</id>
+                        <phase>process-test-classes</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>org.wildfly</groupId>
+                                    <artifactId>wildfly-dist</artifactId>
+                                    <version>8.1.0.Final</version>
+                                    <type>zip</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>target</outputDirectory>
+                                </artifactItem>
+                            </artifactItems>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <!-- Fork every test because it will launch a separate AS instance -->
+                    <forkMode>always</forkMode>
+                    <systemPropertyVariables>
+                            <java.util.logging.manager>org.jboss.logmanager.LogManager</java.util.logging.manager>
+                            <jboss.home>${project.basedir}/target/wildfly-8.1.0.Final</jboss.home>
+                            <module.path>${project.basedir}/target/wildfly-8.1.0.Final/modules</module.path>
+                    </systemPropertyVariables>
+                    <redirectTestOutputToFile>false</redirectTestOutputToFile>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
@@ -111,6 +203,30 @@
             <artifactId>javaee-api</artifactId>
             <version>${version.dependency.javaee}</version>
             <scope>provided</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jboss.arquillian.junit</groupId>
+            <artifactId>arquillian-junit-container</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-arquillian-container-embedded</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-embedded</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
