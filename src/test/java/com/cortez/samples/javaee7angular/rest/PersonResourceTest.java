@@ -6,6 +6,7 @@
 package com.cortez.samples.javaee7angular.rest;
 
 import com.cortez.samples.javaee7angular.data.Person;
+import com.cortez.samples.javaee7angular.pagination.PaginatedListWrapper;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -27,7 +28,9 @@ public class PersonResourceTest {
     @Deployment
     public static JavaArchive getDeployment(){
         return ShrinkWrap.create(JavaArchive.class)
-                .addClasses(Person.class, PersonResource.class)
+                .addClasses(Person.class, PersonResource.class, 
+                        PaginatedListWrapper.class)
+                .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
     }
     
