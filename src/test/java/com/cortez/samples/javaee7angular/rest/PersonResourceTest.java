@@ -87,4 +87,21 @@ public class PersonResourceTest {
         Assert.assertNotNull(found);
         Assert.assertEquals(found, person2);
     }
+    
+    @Test
+    public void updatePersonTest(){
+        Long id = person1.getId();
+        Person updatedPerson = personResource.getPerson(person1.getId());
+        Assert.assertEquals(updatedPerson, person1);
+        
+        updatedPerson.setName("updated name");
+        updatedPerson.setDescription("updated description");
+        personResource.savePerson(updatedPerson);
+        Person found = personResource.getPerson(id);
+        
+        Assert.assertEquals(found.getName(), updatedPerson.getName());
+        Assert.assertEquals(found.getDescription(), updatedPerson.getDescription());
+        Assert.assertFalse(found.getName().equals(person1.getName()));
+        Assert.assertFalse(found.getDescription().equals(person1.getDescription()));
+    }
 }
