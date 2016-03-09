@@ -37,6 +37,7 @@ public class PersonResourceTest {
                 .addClasses(Person.class, PersonResource.class, PaginatedListWrapper.class)
                 .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+        
     }
     
     @PersistenceContext

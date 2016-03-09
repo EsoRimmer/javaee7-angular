@@ -10,38 +10,62 @@ import com.codeborne.selenide.ElementsCollection;
 import org.junit.Test;
 import static com.codeborne.selenide.Selenide.*;
 import com.codeborne.selenide.SelenideElement;
-import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
+import com.cortez.samples.javaee7angular.data.Person;
+import com.cortez.samples.javaee7angular.pagination.PaginatedListWrapper;
 import com.cortez.samples.javaee7angular.rest.PersonResource;
-import java.util.List;
-import javax.ejb.EJB;
-import javax.inject.Inject;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.junit.After;
 import org.junit.Before;
+import org.junit.runner.RunWith;
 import org.openqa.selenium.By;
-import org.openqa.selenium.WebElement;
 
 /**
  *
  * @author Jakub
  */
+@RunWith(Arquillian.class)
 public class PersonResourceWebTest {
     
-//    @Before
-//    public void setUp(){
-//        open("http://localhost:8080/javaee7-angular-3.6");
-//    }        
-//    
-//    @Test
-//    public void testCreatePerson(){
-//        $(By.name("name")).setValue("CreateTestName");
-//        $(By.name("description")).setValue("Test Description");
-//        $(By.name("imageUrl")).setValue("http://localhost:8080/javaee7-angular-3.6/");
-//        $(By.xpath("//button[text()='Save']")).click();
-//        
-//        $(By.xpath("//*[text()='Last']")).click();
-//        
-//        $(By.className("gridStyle")).shouldHave(text("CreateTestName \n Test Description"));      
-//    }
-//    
+    private static final String WEBAPP_SRC = "src/main/webapp";
+    
+    @Deployment(testable = false)
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "PersonResourceWebTest.war")
+                .addClasses(Person.class, PersonResource.class, PaginatedListWrapper.class)
+                .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
+                .addAsWebResource("/src/main/webapp", "index.html")
+                .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
+               // .importDirectory(WEBAPP_SRC).as(GenericArchive.class)
+    }
+
+    
+    @Before
+    public void setUp(){
+        
+        open("http://localhost:8080/javaee7-angular-3.6");
+    }     
+    
+    @After
+    public void tearDown(){
+        close();
+    }
+    
+    @Test
+    public void testCreatePerson(){
+        $(By.name("name")).setValue("CreateTestName");
+        $(By.name("description")).setValue("Test Description");
+        $(By.name("imageUrl")).setValue("http://localhost:8080/javaee7-angular-3.6/");
+        $(By.xpath("//button[text()='Save']")).click();
+        
+        $(By.xpath("//*[text()='Last']")).click();
+        
+        $(By.className("gridStyle")).shouldHave(text("CreateTestName \n Test Description"));      
+    }
+    
 //    @Test
 //    public void testUpdatePerson(){       
 //        $(By.xpath("//*[text()='Last']")).click();
@@ -79,5 +103,5 @@ public class PersonResourceWebTest {
 //
 //        table.shouldNotHave(text("DeleteTestName"));
 //    }
-//    
+    
 }
