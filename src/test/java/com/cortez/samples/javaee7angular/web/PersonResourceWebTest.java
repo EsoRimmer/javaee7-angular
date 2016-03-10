@@ -13,10 +13,18 @@ import com.codeborne.selenide.SelenideElement;
 import com.cortez.samples.javaee7angular.data.Person;
 import com.cortez.samples.javaee7angular.pagination.PaginatedListWrapper;
 import com.cortez.samples.javaee7angular.rest.PersonResource;
+import java.io.File;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.shrinkwrap.api.ArchivePaths;
+import org.jboss.shrinkwrap.api.Filters;
+import org.jboss.shrinkwrap.api.GenericArchive;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
+import org.jboss.shrinkwrap.api.exporter.ZipExporter;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.jboss.shrinkwrap.api.importer.ZipImporter;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Before;
@@ -37,22 +45,17 @@ public class PersonResourceWebTest {
         return ShrinkWrap.create(WebArchive.class, "PersonResourceWebTest.war")
                 .addClasses(Person.class, PersonResource.class, PaginatedListWrapper.class)
                 .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
-                .addAsWebResource("/src/main/webapp", "index.html")
+                .merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
+                                .importDirectory(WEBAPP_SRC).as(GenericArchive.class),
+                        "/", Filters.includeAll())
                 .addAsManifestResource(EmptyAsset.INSTANCE, "beans.xml");
-               // .importDirectory(WEBAPP_SRC).as(GenericArchive.class)
     }
 
     
     @Before
-    public void setUp(){
-        
-        open("http://localhost:8080/javaee7-angular-3.6");
+    public void setUp(){   
+        open("http://localhost:8080/PersonResourceWebTest");
     }     
-    
-    @After
-    public void tearDown(){
-        close();
-    }
     
     @Test
     public void testCreatePerson(){

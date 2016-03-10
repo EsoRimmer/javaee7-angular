@@ -3,6 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+package com.cortez.samples.javaee7angular.rest;
 
 import javax.ejb.EJB;
 import javax.persistence.EntityManager;
