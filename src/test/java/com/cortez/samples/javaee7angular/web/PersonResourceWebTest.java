@@ -69,42 +69,41 @@ public class PersonResourceWebTest {
         $(By.className("gridStyle")).shouldHave(text("CreateTestName \n Test Description"));      
     }
     
-//    @Test
-//    public void testUpdatePerson(){       
-//        $(By.xpath("//*[text()='Last']")).click();
-//        addTestPerson("TestNameForUpdate");
-//        $(By.xpath("//*[text()='TestNameForUpdate']")).click();
-//        
-//        $(By.name("name")).has(text("TestNameForUpdate"));
-//        $(By.name("description")).has(text("TestDescriptionforUpdate"));
-//        $(By.name("imgUrl")).has(text("https://www.google.sk/"));
-//        
-//        $(By.name("name")).setValue("UpdatedName");
-//        $(By.xpath("//button[text()='Save']")).click();
-//        $(By.className("gridStyle")).shouldHave(text("UpdatedName \n TestDescription")); 
-//    }
-//    
-//    private void addTestPerson(String name){
-//        $(By.name("name")).setValue(name);
-//        $(By.name("description")).setValue("TestDescription");
-//        $(By.name("imageUrl")).setValue("https://www.google.sk/");
-//        $(By.xpath("//button[text()='Save']")).click();
-//    }
-//    
-//    @Test
-//    public void testDeletePerson(){
-//        addTestPerson("DeleteTestName");
-//        $(By.xpath("//*[text()='Last']")).click();
-//        SelenideElement table = $(By.className("gridStyle"));
-//        ElementsCollection rows= table.$$(By.xpath("//div[@class='ng-scope ngRow even']"));
-//        for(SelenideElement row : rows){
-//            if(row.has(text("DeleteTestName"))){
-//                row.$(By.xpath("//span[@class='glyphicon glyphicon-remove remove ng-scope']")).click();
-//                break;
-//            }
-//        }
-//
-//        table.shouldNotHave(text("DeleteTestName"));
-//    }
+    @Test
+    public void testUpdatePerson(){       
+        $(By.xpath("//*[text()='Last']")).click();
+        addTestPerson("TestNameForUpdate");
+        $(By.xpath("//*[text()='TestNameForUpdate']")).click();
+        
+        $(By.name("name")).has(text("TestNameForUpdate"));
+        $(By.name("description")).has(text("TestDescriptionforUpdate"));
+        $(By.name("imgUrl")).has(text("https://www.google.sk/"));
+        
+        $(By.name("name")).setValue("UpdatedName");
+        $(By.xpath("//button[text()='Save']")).click();
+        $(By.className("gridStyle")).shouldHave(text("UpdatedName \n TestDescription")); 
+    }
     
+    private void addTestPerson(String name){
+        $(By.name("name")).setValue(name);
+        $(By.name("description")).setValue("TestDescription");
+        $(By.name("imageUrl")).setValue("https://www.google.sk/");
+        $(By.xpath("//button[text()='Save']")).click();
+    }
+    
+    @Test
+    public void testDeletePerson(){
+        addTestPerson("DeleteTestName");
+        $(By.xpath("//*[text()='Last']")).click();
+        SelenideElement table = $(By.className("gridStyle"));
+        ElementsCollection rows= table.$$(By.xpath("//div[@class='ng-scope ngRow even']"));
+        for(SelenideElement row : rows){
+            if(row.has(text("DeleteTestName"))){
+                row.$(By.xpath("//span[@class='glyphicon glyphicon-remove remove ng-scope']")).click();
+                break;
+            }
+        }
+
+        table.shouldNotHave(text("DeleteTestName"));
+    }
 }
